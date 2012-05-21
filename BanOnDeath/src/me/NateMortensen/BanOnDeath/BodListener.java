@@ -9,7 +9,6 @@ import java.util.Date;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -24,9 +23,11 @@ public class BodListener implements Listener {
 
     private static final DateFormat dateFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
     private final BanOnDeath plugin;
+    private final PlayerManager playermanager;
 
     public BodListener(final BanOnDeath plugin) {
         this.plugin = plugin;
+        playermanager=plugin.playermanager;
     }
 
     @EventHandler
@@ -36,24 +37,21 @@ public class BodListener implements Listener {
             if (player.hasPermission("bod.noban") || player.isOp()) {
                 return;
             }
-            final String playerLivesPath = player.getName() + ".lives";
-            int playerLives = plugin.players.getInt(playerLivesPath);
+            int playerLives = playermanager.getLives(player);
             //Lives check
             if (playerLives > 0) {
             	playerLives -= 1;
-                plugin.players.set(playerLivesPath, playerLives);
+                playermanager.setLives(player, playerLives);
                 player.sendMessage("You have " + playerLives + " lives remaining.");
                 return;
             }
             final long now = System.currentTimeMillis();
             // Player ban code goes below.
-            plugin.players.set(player.getName().toLowerCase() + ".lastbantime", now);
-            plugin.clearInventory(player);
-            player.kickPlayer(plugin.config.getString("Kick Message"));
+            playermanager.banPlayer(player);
 
             if (plugin.logToFile == false) {
                 final Date nowDate = new Date(now);
-                final Date unbanDate = new Date(now + plugin.getBanLength(plugin.getTier(player)));
+                final Date unbanDate = new Date(now + playermanager.getUnbanDate(player));
                 try {
                     PrintWriter pw = new PrintWriter(new FileWriter(plugin.file.getPath(), true));
                     pw.println(player.getName() + ", "
@@ -89,20 +87,11 @@ public class BodListener implements Listener {
 //        }
 //    }
 
-    public void onEntityDamage(EntityDamageEvent event) {
-        if (event.getEntity() instanceof Player) {
-            final Player player = (Player) event.getEntity();
-            if (plugin.godded.contains(player.getName())) {
-                event.setDamage(0);
-                event.setCancelled(true);
-            }
-        }
-    }
 
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
-        if (plugin.isBanned(event.getPlayer())) {
-            Date date = new Date(plugin.getBanLength(plugin.getTier(event.getPlayer())) + plugin.players.getLong(event.getPlayer().getName().toLowerCase() + ".lastbantime"));
+        if (playermanager.isBanned(event.getPlayer())) {
+            Date date = new Date(plugin.playermanager.getBanLength(playermanager.getTier(event.getPlayer())) + playermanager.getLastBanTime(event.getPlayer()));
             final String kickMsg = "Rejoin on: " + dateFormatter.format(date);
             event.setKickMessage(kickMsg); //Workaround for esoteric bug
             event.disallow(Result.KICK_BANNED, kickMsg);
@@ -110,14 +99,14 @@ public class BodListener implements Listener {
         }
         final Player player = event.getPlayer();
 
-        if (!(plugin.players.contains(player.getName().toLowerCase() + ".lives"))) {
-            plugin.resetLives(player);
+        if (!(playermanager.hasPlayerConfig(player, ".lives"))) {
+            playermanager.resetLives(player);
             return;
         }
 
         
-        if (plugin.needsReset(player)) {
-            plugin.resetLives(player);
+        if (playermanager.needsReset(player)) {
+            playermanager.resetLives(player);
         }
     }
 }

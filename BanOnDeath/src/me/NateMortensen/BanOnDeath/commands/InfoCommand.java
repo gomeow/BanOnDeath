@@ -23,19 +23,19 @@ public class InfoCommand implements BODCommand {
             sender.sendMessage("You must specify a player to get info on.");
             return;
         }
-        final String targetPlayerName = args[0];
-        if (!plugin.players.contains(targetPlayerName)) {
+        final String targetPlayerName = args[0].toLowerCase();
+        if (!plugin.playermanager.players.contains(targetPlayerName.toLowerCase())) {
             sender.sendMessage("Specified player is not currently banned, has never been banned, nor has any lives.");
             return;
         }
-        Player player = plugin.getServer().getPlayer(targetPlayerName);
-        final long bantime = plugin.getBanLength(plugin.getTier(player));
-        if (System.currentTimeMillis() - plugin.players.getLong(targetPlayerName + ".lastbantime") < bantime) {
-            final long timebanned = plugin.getLastBanTime(player);
+        Player player = plugin.getServer().getPlayer(targetPlayerName.toLowerCase());
+        final long bantime = plugin.playermanager.getBanLength(plugin.playermanager.getTier(player));
+        if (System.currentTimeMillis() - plugin.playermanager.players.getLong(targetPlayerName.toLowerCase() + ".lastbantime") < bantime) {
+            final long timebanned = plugin.playermanager.getLastBanTime(player);
             Date date = new Date(timebanned + bantime);
             sender.sendMessage(targetPlayerName + " Will be unbanned on:  " + date.toString());
-        } else if (plugin.players.contains(targetPlayerName + ".lives")) {
-            sender.sendMessage(targetPlayerName + " has " + plugin.players.getInt(targetPlayerName.toLowerCase() + ".lives") + " lives remaining");
+        } else if (plugin.playermanager.players.contains(targetPlayerName + ".lives")) {
+            sender.sendMessage(targetPlayerName + " has " + plugin.playermanager.players.getInt(targetPlayerName.toLowerCase() + ".lives") + " lives remaining");
         } else {
             sender.sendMessage("Specified player is not currently banned, nor has any lives.");
         }

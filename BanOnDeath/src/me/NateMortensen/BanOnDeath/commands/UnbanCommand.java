@@ -17,12 +17,12 @@ public class UnbanCommand implements BODCommand {
             return;
         }
         final String targetPlayerName = args[0].toLowerCase();
-        if (!plugin.players.contains(targetPlayerName)) {
+        if (!plugin.playermanager.players.contains(targetPlayerName)) {
             sender.sendMessage("Player appears to be non-existent.  Check the spelling. ");
             return;
         }
 
-        plugin.players.set(targetPlayerName + ".lastbantime", 0);
+        plugin.playermanager.players.set(targetPlayerName.toLowerCase() + ".lastbantime", 0);
         sender.sendMessage(targetPlayerName + " has been unbanned.");
     }
 

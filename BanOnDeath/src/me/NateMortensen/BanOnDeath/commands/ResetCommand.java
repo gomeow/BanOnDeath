@@ -21,8 +21,8 @@ public class ResetCommand implements BODCommand {
         as it isn't possible to get the permissions of an offline player. 
         - Nate
         */
-        if (plugin.isOnline(args[0])){
-        	plugin.resetLives(plugin.getServer().getPlayer(args[0]));
+        if (plugin.playermanager.isOnline(args[0])){
+        	plugin.playermanager.resetLives(plugin.getServer().getPlayer(args[0]));
         	return;
         }
         sender.sendMessage(ChatColor.RED.toString() + ChatColor.BOLD + "This player is not currently online, and as such their lives cannot be reset.");

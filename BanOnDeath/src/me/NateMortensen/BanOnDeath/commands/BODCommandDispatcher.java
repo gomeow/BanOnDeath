@@ -14,7 +14,7 @@ import org.bukkit.command.CommandSender;
 public final class BODCommandDispatcher {
 
     private static final BODCommand[] commandArr = {new BanCommand(), new GiveCommand(),
-        new GodCommand(), new InfoCommand(), new ResetCommand(),
+         new InfoCommand(), new ResetCommand(),
         new SetCommand(), new TakeCommand(), new UnbanCommand(),};
     private final Map<String, BODCommand> commands = new LinkedHashMap<String, BODCommand>();
     private final BanOnDeath plugin;
