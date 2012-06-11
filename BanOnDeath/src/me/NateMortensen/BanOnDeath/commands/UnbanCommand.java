@@ -1,5 +1,6 @@
 package me.NateMortensen.BanOnDeath.commands;
 
+import me.NateMortensen.BanOnDeath.BODPlayer;
 import me.NateMortensen.BanOnDeath.BanOnDeath;
 import org.bukkit.command.CommandSender;
 
@@ -17,12 +18,10 @@ public class UnbanCommand implements BODCommand {
             return;
         }
         final String targetPlayerName = args[0].toLowerCase();
-        if (!plugin.playermanager.players.contains(targetPlayerName)) {
-            sender.sendMessage("Player appears to be non-existent.  Check the spelling. ");
-            return;
-        }
+        BODPlayer player = plugin.getPlayer(targetPlayerName);
 
-        plugin.playermanager.players.set(targetPlayerName.toLowerCase() + ".lastbantime", 0);
+        player.setBanTime(0);
+        player.setNeedsReset(true);
         sender.sendMessage(targetPlayerName + " has been unbanned.");
     }
 

@@ -21,37 +21,38 @@ import org.bukkit.event.player.PlayerLoginEvent.Result;
  */
 public class BodListener implements Listener {
 
-    private static final DateFormat dateFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+    private static final DateFormat dateFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
     private final BanOnDeath plugin;
-    private final PlayerManager playermanager;
 
     public BodListener(final BanOnDeath plugin) {
         this.plugin = plugin;
-        playermanager=plugin.playermanager;
     }
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
         if (event instanceof PlayerDeathEvent) {
-            final Player player = (Player) event.getEntity();
-            if (player.hasPermission("bod.noban") || player.isOp()) {
+        	Player theplayer = (Player)event.getEntity();
+            if (theplayer.hasPermission("bod.noban") || theplayer.isOp()) {
                 return;
             }
-            int playerLives = playermanager.getLives(player);
+            final BODPlayer player = plugin.getPlayer(theplayer.getName().toLowerCase());
+            //Check if the player needs a life reset, and if so, reset their lives.
+            BODTier tier = plugin
+            		.getTierOfPlayer(theplayer);
+            if (player.needsReset(tier.getResetTime())){
+            	player.reset(tier);
+            }
             //Lives check
-            if (playerLives > 0) {
-            	playerLives -= 1;
-                playermanager.setLives(player, playerLives);
-                player.sendMessage("You have " + playerLives + " lives remaining.");
-                return;
+            if (player.getLives() > 0){
+            	player.decreaseLives(1);
             }
             final long now = System.currentTimeMillis();
             // Player ban code goes below.
-            playermanager.banPlayer(player);
-
-            if (plugin.logToFile == false) {
+            player.ban(tier);
+            theplayer.kickPlayer(plugin.kickmessage);
+            if (plugin.logToFile) {
                 final Date nowDate = new Date(now);
-                final Date unbanDate = new Date(now + playermanager.getUnbanDate(player));
+                final Date unbanDate = new Date(player.getUnbanDate());
                 try {
                     PrintWriter pw = new PrintWriter(new FileWriter(plugin.file.getPath(), true));
                     pw.println(player.getName() + ", "
@@ -90,23 +91,17 @@ public class BodListener implements Listener {
 
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
-        if (playermanager.isBanned(event.getPlayer())) {
-            Date date = new Date(plugin.playermanager.getBanLength(playermanager.getTier(event.getPlayer())) + playermanager.getLastBanTime(event.getPlayer()));
+    	BODPlayer player = plugin.getPlayer(event.getPlayer().getName().toLowerCase());
+        if (player.isBanned()) {
+            Date date = new Date(player.getUnbanDate());
             final String kickMsg = "Rejoin on: " + dateFormatter.format(date);
             event.setKickMessage(kickMsg); //Workaround for esoteric bug
             event.disallow(Result.KICK_BANNED, kickMsg);
             return;
         }
-        final Player player = event.getPlayer();
-
-        if (!(playermanager.hasPlayerConfig(player, ".lives"))) {
-            playermanager.resetLives(player);
-            return;
-        }
-
-        
-        if (playermanager.needsReset(player)) {
-            playermanager.resetLives(player);
+        BODTier tier = plugin.getTier(player.getName().toLowerCase());
+        if (player.needsReset(tier.getBanLength())){
+        	player.reset(tier);
         }
     }
 }

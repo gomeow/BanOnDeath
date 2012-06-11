@@ -1,8 +1,9 @@
 package me.NateMortensen.BanOnDeath.commands;
 
+import me.NateMortensen.BanOnDeath.BODPlayer;
 import me.NateMortensen.BanOnDeath.BanOnDeath;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  * 
@@ -17,15 +18,18 @@ public class ResetCommand implements BODCommand {
             sender.sendMessage("You must specify a player to reset.");
             return;
         }
-        /* After looking at the code and limitations in primarily Bukkit, it isn't possible to reset the lives of an offline player,
-        as it isn't possible to get the permissions of an offline player. 
-        - Nate
-        */
-        if (plugin.playermanager.isOnline(args[0])){
-        	plugin.playermanager.resetLives(plugin.getServer().getPlayer(args[0]));
+        Player player = plugin.getServer().getPlayer(args[0]);
+        BODPlayer bplayer = plugin.getPlayer(player.getName());
+        //Reset their lives if they're online, as you can only do that when you can get their permissions.
+        if (player.isOnline()){
+        	bplayer.reset(plugin.getTier(player.getName()));
+        	sender.sendMessage("You reset the lives and ban information of "+bplayer.getName());
         	return;
         }
-        sender.sendMessage(ChatColor.RED.toString() + ChatColor.BOLD + "This player is not currently online, and as such their lives cannot be reset.");
+        //else
+        //Reset their lives when they next come online.
+        bplayer.setNeedsReset(true);
+        sender.sendMessage("You reset the lives and ban information of "+bplayer.getName());
     }
 
     public String getPermissionNode() {

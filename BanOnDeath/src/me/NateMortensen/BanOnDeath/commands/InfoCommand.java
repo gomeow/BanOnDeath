@@ -4,10 +4,13 @@
  */
 package me.NateMortensen.BanOnDeath.commands;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import me.NateMortensen.BanOnDeath.BODPlayer;
 import me.NateMortensen.BanOnDeath.BanOnDeath;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 /**
  * Command to get information on a player. Shows unban date if applicable, or
@@ -17,28 +20,38 @@ import org.bukkit.entity.Player;
  * @author Score_Under
  */
 public class InfoCommand implements BODCommand {
-
+    private static final DateFormat dateFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
     public void execute(BanOnDeath plugin, CommandSender sender, String[] args) {
         if (args.length < 1) {
             sender.sendMessage("You must specify a player to get info on.");
             return;
         }
         final String targetPlayerName = args[0].toLowerCase();
-        if (!plugin.playermanager.players.contains(targetPlayerName.toLowerCase())) {
-            sender.sendMessage("Specified player is not currently banned, has never been banned, nor has any lives.");
-            return;
+        BODPlayer player = plugin.getPlayer(targetPlayerName);
+        String lives;
+        String isbanned;
+        String unbantime;
+        String message;
+        //set lives.
+        lives = Integer.toString(player.getLives());
+        //set isbanned.
+        if (player.isBanned()){
+        	isbanned = "currently banned.";
+        }else {
+        	isbanned = "not currently banned by BOD";
         }
-        Player player = plugin.getServer().getPlayer(targetPlayerName.toLowerCase());
-        final long bantime = plugin.playermanager.getBanLength(plugin.playermanager.getTier(player));
-        if (System.currentTimeMillis() - plugin.playermanager.players.getLong(targetPlayerName.toLowerCase() + ".lastbantime") < bantime) {
-            final long timebanned = plugin.playermanager.getLastBanTime(player);
-            Date date = new Date(timebanned + bantime);
-            sender.sendMessage(targetPlayerName + " Will be unbanned on:  " + date.toString());
-        } else if (plugin.playermanager.players.contains(targetPlayerName + ".lives")) {
-            sender.sendMessage(targetPlayerName + " has " + plugin.playermanager.players.getInt(targetPlayerName.toLowerCase() + ".lives") + " lives remaining");
-        } else {
-            sender.sendMessage("Specified player is not currently banned, nor has any lives.");
+        //set unbantime
+        unbantime = "";
+        if (player.isBanned()){
+        	unbantime = ", and will be unbanned on "+dateFormatter.format(new Date(player.getUnbanDate()));
         }
+        if (unbantime.equals("")){
+        	message = args[0] + " has "+lives+" lives, and is "+isbanned;
+        }
+        else{
+        	message = args[0] + " has "+lives+" live, is "+isbanned+" "+unbantime+".";
+        }
+        sender.sendMessage(message);
     }
 
     public String getPermissionNode() {

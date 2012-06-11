@@ -1,5 +1,6 @@
 package me.NateMortensen.BanOnDeath.commands;
 
+import me.NateMortensen.BanOnDeath.BODPlayer;
 import me.NateMortensen.BanOnDeath.BanOnDeath;
 import org.bukkit.command.CommandSender;
 
@@ -28,11 +29,17 @@ public class GiveCommand implements BODCommand {
             sender.sendMessage("Try " + BODCommandDispatcher.getFullSyntax(this) + " instead.");
             return;
         }
-        final String livesPath = args[0].toLowerCase() + ".lives";
-        if (!plugin.playermanager.players.contains(livesPath)) {
-            sender.sendMessage("That player doesn't seem to exist or is currently banned.");
+        final String origPlayerName = args[0];
+        final String lowerPlayerName = origPlayerName.toLowerCase();
+        final BODPlayer player = plugin.getPlayer(lowerPlayerName);
+        final int oldLives = player.getLives();
+        final int newLives = oldLives + amount;
+        if (newLives <= 0) {
+            sender.sendMessage("That would leave the player with less than 0 lives.  If you want to ban them, use " + BODCommandDispatcher.getFullSyntax(plugin.getSubCommand("ban")));
+            sender.sendMessage("Currently, that player has " + oldLives + (oldLives == 1 ? " life" : " lives") + " remaining.");
         } else {
-            plugin.playermanager.players.set(livesPath, plugin.playermanager.players.getInt(livesPath) + amount);
+            player.setLives(newLives);
+            sender.sendMessage(origPlayerName + " has been moved up from " + oldLives + " to " + newLives + (newLives == 1 ? " life" : " lives") + ".");
         }
     }
 

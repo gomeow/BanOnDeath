@@ -14,14 +14,13 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class YAPI {
 
-    public static void saveYaml(JavaPlugin p, FileConfiguration file) {
+    public static void saveYaml(JavaPlugin p, FileConfiguration file, String name) {
         if (file == null) {
             return;
-        }
-        try {
-            file.save(new File(p.getDataFolder(), file.getName()));
+        } try {
+        file.save(new File(p.getDataFolder(), name));
         } catch (IOException ex) {
-            p.getLogger().log(Level.SEVERE, "Could not save " + file.getName() + ".yml to " + p.getDataFolder().getName() + file.getName() + ".yml", ex);
+            p.getLogger().log(Level.SEVERE, "Could not save " + name + ".yml to " + p.getDataFolder().getName() +"/"+ name + ".yml", ex);
         }
     }
 
@@ -30,4 +29,4 @@ public class YAPI {
             file.set(path, defaultvalue);
         }
     }
-}
+    }
