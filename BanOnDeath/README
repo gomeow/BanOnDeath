@@ -1,0 +1,80 @@
+Ban On Death is a plugin that enables you to ban players on death, customize the length of the bans, and even the messages they receive for their failure! Whether, it's 5 seconds, or 5 hours, they're not getting back on until their time is up! (Unless of course, you're feeling nice and want to manually unban them.)
+
+Version 2.2.1 is now up!
+
+Features
+
+Length of Bans can now be specified in the config.
+Players see how much longer they're banned for when they try logging in.
+Bans continue to count down, even while the server is offline(as long as server is shut down with the stop command).
+Permissions support.
+Commands.
+Customize the message players receive upon dying.
+Lives!
+Commands
+
+/bod ban <username> : Bans the specified player for the duration specified in the configuration. Currently, adding arguments to specify the ban's length is not supported. This will hopefully be added in an future release.
+/bod unban <username> : Unbans the specified player from their temporary ban, allowing them back onto the server. As of version 2.1(MC 1.2.5), all is no longer accepted as an argument.
+/bod god <username> :Makes the specified player invincible to all damage. If you do not specify a player, the player entering the command will become invincible.
+/bod info <username> : Returns how much time a player has left in a ban OR how many lives they have remaining. It'll only display lives remaining when the player is not currently banned. Make sure to remember that players' lives only reset on login(after a specified number of days) for the sake of being lightweight.
+/bod give <username> <amount>: Gives the specified player additional lives.
+/bod take <username> <amount>: Removes specified amount of lives from specified player.
+/bod set <username> <amount>: Sets the amount of lives of the specified player to the specified amount.
+/bod lives : Returns how many lives the user who typed the command in has remaining. Currently there is no permission node for this command.
+Permission
+
+-bod.* : Gives all permission nodes, including bod.unbanall
+-bod.unban : Gives permission to use the /bod unban, but not to /bod unban all.
+-bod.ban : Gives permission to use /bod ban.
+-bod.noban : Prevents player from being banned either from dying, or from /bod ban.
+-bod.info: Gives permission to use the /bod info command.
+-bod.take: Gives permission to use the /bod take command.
+-bod .set: Gives permission to use the /bod set command.
+-bod.give: Gives permission to use the /bod give command.
+-bod.tiers.<tiername>: Used as part of the lives system. See the section on lives for an explanation of this.
+Installation
+
+To install, all you have to do is put the BanOnDeath.jar inside your plugins folder. The BanOnDeath folder will be generated, along with a config.yml and Players.yml. If you ever manage to mess up the config.yml, simply delete it and a new one will be generated.
+
+Upcoming Features
+
+None at the moment.
+Config Explained
+
+Config.yml
+
+Kick Message: The message players are sent when they die.
+WriteToFile: Boolean(true/false), whether or not the deaths of players are written to banlist.csv.
+Tiers.yml:
+
+number_of_tiers: Removed in version 2.2.1 All tiers Should look like the example below. If they're missing a field, they'll inherit it from the default one. Don't remove the default tier, no matter how tempting. Default:
+
+unit: Can be "minute", "second", "hour", or "day".
+amount_of_unit: Integer, the number of units in the length of this tier's ban.
+resettime: The number of DAYS until this user's lives reset.
+Lives: Amount of lives given on reset.
+If you want to add a new tier, just use this format below:
+
+Moved to Pastes in order to keep the format.
+
+Players.yml
+
+Keeps track of players stuff. Use commands if you need to change things.
+
+Lives
+
+Here's the features of the new lives system!
+
+Players can type /lives to see their remaining lives.
+/bod set to set the lives of a player.
+/bod take to remove lives from a player.
+/bod give to give additional lives to a player.
+/bod info to find out information on a player(whether or not they're banned, when they'll be unbanned, how many lives they have).
+Lives will reset when a player joins after a specified number of days(Lives->resettime)
+Players who are opped will not ever lose lives upon dying.
+Permissions based. See the section on Tiers for more information.
+Source Code
+
+Although I'm not required to by this license, I figured I'd upload the source code anyway. As a warning however, I don't use a lot of standing coding procedure, and am heavily self taught. The same is even more true for Github, so bear with me.
+
+https://github.com/evilmidget38/BanOnDeath
