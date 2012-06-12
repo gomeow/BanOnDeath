@@ -25,7 +25,7 @@ public class BODPlayer {
 	FileConfiguration file;
 	public BODPlayer(FileConfiguration config, String n, BanOnDeath p){
 		file = config;
-		name = n;
+		name = n.toLowerCase();
 		plugin = p;
 		if (config.contains(name)){
 			section = config.getConfigurationSection(name);
@@ -100,7 +100,7 @@ public class BODPlayer {
 	}
 	public Boolean needsReset(long resettime){
 		if (needsreset) return true;
-		if (System.currentTimeMillis() - lastreset < resettime) return true;
+		if (System.currentTimeMillis() - lastreset > resettime) return true;
 		return false;
 	}
 	public void save(){

@@ -36,7 +36,7 @@ public class InfoCommand implements BODCommand {
         lives = Integer.toString(player.getLives());
         //set isbanned.
         if (player.isBanned()){
-        	isbanned = "currently banned.";
+        	isbanned = "currently banned";
         }else {
         	isbanned = "not currently banned by BOD";
         }

@@ -12,6 +12,7 @@ import me.NateMortensen.BanOnDeath.commands.BODCommandDispatcher;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -79,18 +80,31 @@ public class BanOnDeath extends JavaPlugin {
                 }
             }
         }
+  
+        createDefaultTier();
         defaulttier = new BODTier(tiersconfig, "default", this);
         tiers = loadTiers();
+        log("Loaded "+Integer.toString(tiers.size())+" tiers.");
+        for (BODTier tier : tiers){
+        	log(tier.getName());
+        }
         
+        
+    }
+    public void createDefaultTier(){
+    	if (!tiersconfig.contains("default")){
+    		ConfigurationSection section = tiersconfig.createSection("default");
+    		section.set("lives", 1);
+    		section.set("unit", "minute");
+    		section.set("numberofunit", 30);
+    		section.set("resettime", 7);
+    		YAPI.saveYaml(this, tiersconfig, "tiers.yml");
+    	}
     }
     public List<BODTier> loadTiers(){
     	List<BODTier> loaded = new ArrayList<BODTier>();
     	Set<String> keys = tiersconfig.getKeys(false);
-    	List<String> listkeys = new ArrayList<String>();
-    	for (String string : keys){
-    		listkeys.add(string);
-    	}
-    	for (String string : listkeys){ 
+    	for (String string : keys){ 
     		loaded.add(new BODTier(config, string, this));
     	}
     	return loaded;
@@ -123,9 +137,9 @@ public class BanOnDeath extends JavaPlugin {
     }
     public BODTier getTierOfPlayer(Player player){
     	for (BODTier tier : tiers){
-    		if (player.hasPermission("banondeath.tiers."+tier.getName()))return tier;
+    		if (player.hasPermission("banondeath.tiers."+tier.getName().toLowerCase()))return tier;
     	}
-    	return null;
+    	return defaulttier;
     }
     public BODTier getTier(String name){
     	name = name.toLowerCase();
@@ -149,7 +163,8 @@ public class BanOnDeath extends JavaPlugin {
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
         if (cmd.getName().equalsIgnoreCase("lives")) {
             if (sender instanceof Player) {
-                sender.sendMessage("You have " + getPlayer(sender.getName()).getLives() + " lives remaining.");
+            	BODPlayer player = getPlayer(sender.getName());
+                sender.sendMessage("You have " + Integer.toString(player.getLives()) +  (player.getLives() == 1 ? " life" : " lives") +" remaining.");
             } else {
                 sender.sendMessage("Last time I checked Consoles can't die, and don't have lives.  Might just be me though.");
                 sender.sendMessage("If you're trying to get info on a player, use /bod info <playername> instead.");

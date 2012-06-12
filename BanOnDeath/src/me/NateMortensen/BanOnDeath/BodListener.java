@@ -6,6 +6,8 @@ import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -37,14 +39,16 @@ public class BodListener implements Listener {
             }
             final BODPlayer player = plugin.getPlayer(theplayer.getName().toLowerCase());
             //Check if the player needs a life reset, and if so, reset their lives.
-            BODTier tier = plugin
-            		.getTierOfPlayer(theplayer);
+            BODTier tier = plugin.getTierOfPlayer(theplayer);
             if (player.needsReset(tier.getResetTime())){
             	player.reset(tier);
+            	theplayer.sendMessage("You've been saved!  Your lives have been reset!");
             }
             //Lives check
             if (player.getLives() > 0){
             	player.decreaseLives(1);
+            	plugin.getServer().dispatchCommand((CommandSender)theplayer, "lives");
+            	return;
             }
             final long now = System.currentTimeMillis();
             // Player ban code goes below.
@@ -95,8 +99,7 @@ public class BodListener implements Listener {
         if (player.isBanned()) {
             Date date = new Date(player.getUnbanDate());
             final String kickMsg = "Rejoin on: " + dateFormatter.format(date);
-            event.setKickMessage(kickMsg); //Workaround for esoteric bug
-            event.disallow(Result.KICK_BANNED, kickMsg);
+            event.disallow(Result.KICK_OTHER, kickMsg);
             return;
         }
         BODTier tier = plugin.getTier(player.getName().toLowerCase());

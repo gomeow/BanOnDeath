@@ -22,7 +22,7 @@ public class ResetCommand implements BODCommand {
         BODPlayer bplayer = plugin.getPlayer(player.getName());
         //Reset their lives if they're online, as you can only do that when you can get their permissions.
         if (player.isOnline()){
-        	bplayer.reset(plugin.getTier(player.getName()));
+        	bplayer.reset(plugin.getTierOfPlayer(player));
         	sender.sendMessage("You reset the lives and ban information of "+bplayer.getName());
         	return;
         }
@@ -30,6 +30,7 @@ public class ResetCommand implements BODCommand {
         //Reset their lives when they next come online.
         bplayer.setNeedsReset(true);
         sender.sendMessage("You reset the lives and ban information of "+bplayer.getName());
+        plugin.getServer().dispatchCommand(sender, "bod info "+bplayer.getName());
     }
 
     public String getPermissionNode() {
