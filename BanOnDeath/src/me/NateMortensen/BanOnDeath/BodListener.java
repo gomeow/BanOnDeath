@@ -15,6 +15,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 /**
  * ***
@@ -106,5 +107,12 @@ public class BodListener implements Listener {
         if (player.needsReset(tier.getBanLength())){
         	player.reset(tier);
         }
+        plugin.loadPlayerToList(event.getPlayer().getName());
+    }
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event){
+    	if (plugin.players.contains(plugin.getPlayer(event.getPlayer().getName()))){
+    		plugin.players.remove(plugin.getPlayer(event.getPlayer().getName()));
+    	}
     }
 }

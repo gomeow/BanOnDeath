@@ -109,7 +109,7 @@ public class BanOnDeath extends JavaPlugin {
     	List<BODTier> loaded = new ArrayList<BODTier>();
     	Set<String> keys = tiersconfig.getKeys(false);
     	for (String string : keys){ 
-    		loaded.add(new BODTier(config, string, this));
+    		loaded.add(new BODTier(tiersconfig, string, this));
     	}
     	return loaded;
     }
@@ -120,7 +120,8 @@ public class BanOnDeath extends JavaPlugin {
     		if (player.getName().equals(name)) return player;
     	}
     	//Create a new player if one wasn't found.
-    	loadPlayerToList(name);
+    	//loadPlayerToList(name);   We only want to load players to the list if they're online. 
+    	//and if they're already online, they would have been added on login.
     	return loadPlayer(name);
     }
     public void loadPlayerToList(String name){
@@ -137,7 +138,7 @@ public class BanOnDeath extends JavaPlugin {
     }
     public BODPlayer loadPlayer(String name){
     	name = name.toLowerCase();
-    	return new BODPlayer(config, name, this);
+    	return new BODPlayer(playersconfig, name, this);
     }
     public BODTier getTierOfPlayer(Player player){
     	for (BODTier tier : tiers){
