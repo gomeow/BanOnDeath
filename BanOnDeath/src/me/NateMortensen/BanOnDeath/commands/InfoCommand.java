@@ -49,7 +49,7 @@ public class InfoCommand implements BODCommand {
         	message = args[0] + " has "+lives+" lives, and is "+isbanned;
         }
         else{
-        	message = args[0] + " has "+lives+" live, is "+isbanned+" "+unbantime+".";
+        	message = args[0] + " has "+lives+" lives, is "+isbanned+" "+unbantime+".";
         }
         sender.sendMessage(message);
     }

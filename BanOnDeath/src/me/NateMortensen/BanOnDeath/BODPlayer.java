@@ -14,25 +14,28 @@ import org.bukkit.plugin.java.JavaPlugin;
  * For that I had to add in the needsreset so that they can have their lives reset when they're next online.
  */
 public class BODPlayer {
-	long banlength;
-	long bantime;
-	long lastreset;
+	long banlength, bantime, lastreset;
 	String name;
 	boolean needsreset;
 	int lives;	
 	BanOnDeath plugin;
 	ConfigurationSection section;
 	FileConfiguration file;
+	
+	
 	public BODPlayer(FileConfiguration config, String n, BanOnDeath p){
+		
 		file = config;
 		name = n.toLowerCase();
 		plugin = p;
+		
 		if (config.contains(name)){
 			section = config.getConfigurationSection(name);
 		}
 		else{
 			section = config.createSection(name);
 		}
+		
 		//Load everything from the config, or get the default values.
 		banlength = section.getLong("banlength", 1800000);
 		bantime = section.getLong("bantime", 0);
@@ -42,7 +45,7 @@ public class BODPlayer {
 		
 
 	}
-	//Get methods.  
+	//Accessors.  
 	public long getBanLength(){
 		return banlength;
 	}
@@ -64,7 +67,8 @@ public class BODPlayer {
 	public long getUnbanDate(){
 		return bantime + banlength;
 	}
-	//Set methods.  No setName method as that shouldn't be changeable.
+	
+	//Mutators.  No setName method as that shouldn't be changeable.
 	public void setBanLength(long newval){
 		banlength = newval;
 		save();
@@ -85,7 +89,8 @@ public class BODPlayer {
 		lastreset = newval;
 		save();
 	}
-	//Any other methods.
+	
+	//other methods.
 	public Boolean isBanned(){
 		if (System.currentTimeMillis() - bantime < banlength) return true;
 		return false;
