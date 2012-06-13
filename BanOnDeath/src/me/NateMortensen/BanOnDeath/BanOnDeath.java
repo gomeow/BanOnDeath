@@ -72,7 +72,7 @@ public class BanOnDeath extends JavaPlugin {
         log.info(name +" v" + version + " by " + author.get(0) + " enabled!");
         //Write To file.
         if (logToFile) {
-            file = new File(getDataFolder() + "/banlist.cvs");
+            file = new File(getDataFolder() + "/banlist.csv");
             if (!file.exists()) {
                 try {
                     file.createNewFile(); 
