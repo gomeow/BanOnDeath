@@ -92,6 +92,7 @@ public class BODPlayer {
 	
 	//other methods.
 	public Boolean isBanned(){
+		if (banlength <= 0) return true;
 		if (System.currentTimeMillis() - bantime < banlength) return true;
 		return false;
 	}
@@ -105,6 +106,7 @@ public class BODPlayer {
 	}
 	public Boolean needsReset(long resettime){
 		if (needsreset) return true;
+		if (resettime <= 0) return false;
 		if (System.currentTimeMillis() - lastreset > resettime) return true;
 		return false;
 	}

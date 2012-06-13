@@ -1,6 +1,6 @@
 Ban On Death is a plugin that enables you to ban players on death, customize the length of the bans, and even the messages they receive for their failure! Whether, it's 5 seconds, or 5 hours, they're not getting back on until their time is up! (Unless of course, you're feeling nice and want to manually unban them.)
 
-Version 2.2.1 is now up!
+Version 2.3 is now completed!  
 
 Features
 
@@ -21,7 +21,7 @@ Commands
 /bod take <username> <amount>: Removes specified amount of lives from specified player.
 /bod set <username> <amount>: Sets the amount of lives of the specified player to the specified amount.
 /bod reset <username> :  Resets the specified player's lives based on their tier.  If the player is offline, they will be reset upon the next time they join.
-/bod lives : Returns how many lives the user who typed the command in has remaining. Currently there is no permission node for this command.
+/lives : Returns how many lives the user who typed the command in has remaining. Currently there is no permission node for this command.
 Permission
 
 -bod.* : Gives all permission nodes, including bod.unbanall
@@ -51,9 +51,9 @@ logging: Boolean(true/false), whether or not ANY messages are sent to the consol
 Tiers.yml:
 
 Default:
-unit: Can be "minute", "second", "hour", or "day".
-amount_of_unit: Integer, the number of units in the length of this tier's ban.
-resettime: The number of DAYS until this user's lives reset.
+unit: Can be "minute", "second", "hour", "day", or "week".
+amount_of_unit: Integer, the number of units in the length of this tier's ban.  Set to 0 to permanently ban them.
+resettime: The number of DAYS until this user's lives reset.  Set to 0 to disable.
 Lives: Amount of lives given on reset.
 If you want to add a new tier, just use this format below:
 

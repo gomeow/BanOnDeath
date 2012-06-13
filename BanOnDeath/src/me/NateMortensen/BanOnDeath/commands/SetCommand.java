@@ -27,7 +27,7 @@ public class SetCommand implements BODCommand {
             sender.sendMessage("Try /bod set <playername> <amount> instead.");
             return;
         }
-        if (amount <= 0) {
+        if (amount < 0) {
             sender.sendMessage("That would leave the player without any lives.");
             sender.sendMessage("If you want to ban them, use " + BODCommandDispatcher.getFullSyntax(plugin.getSubCommand("ban")) + " instead.");
         } else {

@@ -34,7 +34,7 @@ public class GiveCommand implements BODCommand {
         final BODPlayer player = plugin.getPlayer(lowerPlayerName);
         final int oldLives = player.getLives();
         final int newLives = oldLives + amount;
-        if (newLives <= 0) {
+        if (newLives < 0) {
             sender.sendMessage("That would leave the player with less than 0 lives.  If you want to ban them, use " + BODCommandDispatcher.getFullSyntax(plugin.getSubCommand("ban")));
             sender.sendMessage("Currently, that player has " + oldLives + (oldLives == 1 ? " life" : " lives") + " remaining.");
         } else {
