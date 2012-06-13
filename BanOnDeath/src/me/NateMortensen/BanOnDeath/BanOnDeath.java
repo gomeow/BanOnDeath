@@ -47,6 +47,10 @@ public class BanOnDeath extends JavaPlugin {
         //Initialize classes.
         listener = new BodListener(this);
         dispatcher = new BODCommandDispatcher(this);
+        //Config check for setting the values of defaults.
+        YAPI.configCheck(config, "logging", true);
+        YAPI.configCheck(config, "writeToFile", true);
+        YAPI.configCheck(config, "kick_message", "You have failed!");
         //Set the values of any variables.
         logging = config.getBoolean("logging", true);
         logToFile = config.getBoolean("writeToFile", true);
@@ -137,7 +141,7 @@ public class BanOnDeath extends JavaPlugin {
     }
     public BODTier getTierOfPlayer(Player player){
     	for (BODTier tier : tiers){
-    		if (player.hasPermission("banondeath.tiers."+tier.getName().toLowerCase()))return tier;
+    		if (player.hasPermission("bod.tiers."+tier.getName().toLowerCase()))return tier;
     	}
     	return defaulttier;
     }
