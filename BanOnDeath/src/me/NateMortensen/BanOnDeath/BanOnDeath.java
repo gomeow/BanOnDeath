@@ -89,10 +89,6 @@ public class BanOnDeath extends JavaPlugin {
         defaulttier = new BODTier(tiersconfig, "default", this);
         tiers = loadTiers();
         log("Loaded "+Integer.toString(tiers.size())+" tiers.");
-        for (BODTier tier : tiers){
-        	log(tier.getName());
-        }
-        
         
     }
     public void createDefaultTier(){

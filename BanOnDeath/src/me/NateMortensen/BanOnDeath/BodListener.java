@@ -96,7 +96,7 @@ public class BodListener implements Listener {
 
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
-    	BODPlayer player = plugin.getPlayer(event.getPlayer().getName().toLowerCase());
+    	BODPlayer player = plugin.getPlayer(event.getPlayer().getName());
         if (player.isBanned()) {
             Date date = new Date(player.getUnbanDate());
             final String kickMsg = "Rejoin on: " + dateFormatter.format(date);
@@ -111,8 +111,10 @@ public class BodListener implements Listener {
     }
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event){
-    	if (plugin.players.contains(plugin.getPlayer(event.getPlayer().getName()))){
-    		plugin.players.remove(plugin.getPlayer(event.getPlayer().getName()));
+    	BODPlayer player = plugin.getPlayer(event.getPlayer().getName());
+    	if (plugin.players.contains(player)){
+    		player.save();
+    		plugin.players.remove(player);
     	}
     }
 }
