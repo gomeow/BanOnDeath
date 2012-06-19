@@ -51,6 +51,8 @@ public class BodListener implements Listener {
             	plugin.getServer().dispatchCommand((CommandSender)theplayer, "lives");
             	return;
             }
+            theplayer.getInventory().clear();
+            theplayer.getInventory().setArmorContents(null);
             final long now = System.currentTimeMillis();
             // Player ban code goes below.
             player.ban(tier);

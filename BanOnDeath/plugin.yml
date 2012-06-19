@@ -1,7 +1,7 @@
 name: BanOnDeath
 main: me.NateMortensen.BanOnDeath.BanOnDeath
 author: Nate Mortensen(evilmidget38)
-version: 2.3.1
+version: 2.3.2
 commands:
    bod:
       description:  Series of commands related to BanOnDeath.
