@@ -14,8 +14,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerLoginEvent.Result;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 /**
@@ -99,15 +98,15 @@ public class BodListener implements Listener {
 
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerLogin(PlayerLoginEvent event) {
+    public void onPlayerLogin(PlayerJoinEvent event) {
     	BODPlayer player = plugin.getPlayer(event.getPlayer().getName());
         Tier tier = plugin.getTier(player.getName().toLowerCase());
-        if (player.needsReset(tier.getBanLength())){
+        if (player.needsReset(tier.getBanLength()))
         	player.reset(tier);
-        }
         if (player.isBanned()) {
             final String kickMsg = player.getFailedRejoinMessage(tier);
-            event.disallow(Result.KICK_OTHER, kickMsg);
+            event.getPlayer().kickPlayer(kickMsg);
+            event.setJoinMessage(null);
             return;
         }
         plugin.players.add(player);
