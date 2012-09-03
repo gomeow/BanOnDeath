@@ -38,8 +38,8 @@ public class BODTier extends EasyConfigurationSection implements Tier{
 		super(c);
 		calculateBanLength();
 		//Colored message support.
-		message = ChatColor.translateAlternateColorCodes('%', message);
-		failedRejoinMessage = ChatColor.translateAlternateColorCodes('%', failedRejoinMessage);
+		message = ChatColor.translateAlternateColorCodes('&', message);
+		failedRejoinMessage = ChatColor.translateAlternateColorCodes('&', failedRejoinMessage);
 	}
 	protected void calculateBanLength(){
 		try {
