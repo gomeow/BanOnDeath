@@ -63,26 +63,6 @@ public class EasyConfigurationSection{
 	public void save(){
 		saveObject(this, config);
 	}
-	//Not needed.
-	//	public void save(){
-	//		for (Field field : this.getClass().getDeclaredFields()){
-	//			if (field.isAnnotationPresent(Load.class)){
-	//				String path = field.getName();
-	//				try {
-	//					config.set(path, field.get(this));
-	//
-	//				} catch(IllegalAccessException ex) {
-	//					
-	//				}
-	//			}
-	//		}
-	//		FileConfiguration parent = (FileConfiguration)config.getRoot();
-	//		parent.set(config.getCurrentPath(), config);
-	//	}
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static void loadObject(Object obj, ConfigurationSection c){
-
-	}
 	public void inheritFrom(Object obj){
 		for (Field field : this.getClass().getDeclaredFields())
 			try {
