@@ -3,6 +3,7 @@
  */
 package me.NateMortensen.BanOnDeath;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
 import com.bukkitarena.configuration.EasyConfigurationSection;
@@ -36,6 +37,9 @@ public class BODTier extends EasyConfigurationSection implements Tier{
 	public BODTier(ConfigurationSection c){
 		super(c);
 		calculateBanLength();
+		//Colored message support.
+		message = ChatColor.translateAlternateColorCodes('%', message);
+		failedRejoinMessage = ChatColor.translateAlternateColorCodes('%', failedRejoinMessage);
 	}
 	protected void calculateBanLength(){
 		try {

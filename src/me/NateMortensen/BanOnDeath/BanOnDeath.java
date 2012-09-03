@@ -49,8 +49,6 @@ public class BanOnDeath extends JavaPlugin {
         //Initialize classes.
         listener = new BodListener();
         dispatcher = new BODCommandDispatcher(this);
-        saveConfig();
-        //Register CommandExecutor
         //send the "enabled" message.
         PluginDescriptionFile pdf = this.getDescription();
         String name = pdf.getName();
@@ -62,7 +60,7 @@ public class BanOnDeath extends JavaPlugin {
         log.info(name +" v" + version + " by " + author.get(0) + " enabled!");
         //Write To file.
         if (logToFile) {
-            file = new File(getDataFolder() + "/banlist.csv");
+            file = new File(getDataFolder(), "banlist.csv");
             if (!file.exists()) {
                 try {
                     file.createNewFile(); 
@@ -74,10 +72,8 @@ public class BanOnDeath extends JavaPlugin {
                 }
             }
         }
-        defaulttier = new DefaultTier(tiersconfig.getConfigurationSection("default"));
         loadTiers();
         log("Loaded "+Integer.toString(tiers.size())+" tiers.");
-        YAPI.saveYaml(this, tiersconfig, "tiers.yml");
         
     }
     public static BanOnDeath getInstance(){
@@ -94,16 +90,19 @@ public class BanOnDeath extends JavaPlugin {
         //Set the values of any variables.
         logging = config.getBoolean("logging", true);
         logToFile = config.getBoolean("writeToFile", true);
+        saveConfig();
     }
     public void loadTiers(){
     	tiers = null;
     	tiersconfig = null;
+        defaulttier = new DefaultTier(tiersconfig.getConfigurationSection("default"));
     	tiersconfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "tiers.yml"));
     	Set<String> keys = tiersconfig.getKeys(false);
     	for (String string : keys)
     		tiers.add(new BODTier(tiersconfig.getConfigurationSection(string)));
     	for (Tier tier : tiers)
     		((BODTier)tier).inherit();
+    	YAPI.saveYaml(this, tiersconfig, "tiers.yml");
     }
     public BODPlayer getPlayer(String name){
     	name = name.toLowerCase();
