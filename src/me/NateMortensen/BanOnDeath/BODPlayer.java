@@ -3,6 +3,9 @@
  */
 package me.NateMortensen.BanOnDeath;
 
+import java.text.DateFormat;
+import java.util.Date;
+
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -134,13 +137,9 @@ public class BODPlayer {
 	}
 	public String getFailedRejoinMessage(Tier tier){
 		String msg = tier.getFailedReconnectMessage();
-		for (TimeUnit unit : TimeUnit.values()){
-			String val = "%"+ unit.name().substring(0, 1);
-			String replacement = Long.toString(getRemainingTime()/unit.getTime());
-			while (msg.contains(val))
-				msg.replace(val, replacement);
-		}
-		if ()
+		for (TimeUnit unit : TimeUnit.values())
+			msg.replace("%"+ unit.name().substring(0, 1), Long.toString(getRemainingTime()/unit.getTime()));
+		msg.replace("%date", DateFormat.getDateInstance().format(new Date(getRemainingTime())));
 		return msg;
 	}
 
