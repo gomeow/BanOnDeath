@@ -16,46 +16,50 @@ import com.bukkitarena.configuration.Load;
  */
 public class BODTier extends EasyConfigurationSection implements Tier{
 	@Load
-	int resettime;
+	public int resettime;
 	@Load
-	int banDelay;
+	public int banDelay;
 	@Load
-	int numberofunit;
+	public int numberofunit;
 	@Load
-	int lives;
+	public int lives;
 	@Load
-	String unit;
+	public String unit;
 	@Load
-	String message;
+	public String message;
 	@Load
-	String inherit;
+	public String inherit;
 	@Load
-	String failedRejoinMessage;
+	public String failedRejoinMessage;
 	//These are calculated values, they shouldn't be loaded.
 	long banlength, reset;	
 
 	public BODTier(ConfigurationSection c){
 		super(c);
-		calculateBanLength();
-		//Colored message support.
-		message = ChatColor.translateAlternateColorCodes('&', message);
-		failedRejoinMessage = ChatColor.translateAlternateColorCodes('&', failedRejoinMessage);
+		load();
 	}
 	protected void calculateBanLength(){
 		try {
+			System.out.println(unit);
 			long unitValue = TimeUnit.valueOf(unit.toUpperCase()).getTime();
 			banlength = unitValue * numberofunit;
 		} catch(IllegalArgumentException e){
 			throw new InvalidConfigurationException("Invalid unit for tier:"+getName()+".  Please report the problem if you believe this is a bug.");
 		}
 	}
-	public void inherit(){
+	public void initialize(){
 		if (inherit != null){
 			Tier tier = BanOnDeath.getInstance().getTier(inherit);
 			if (tier == null)
 				throw new InvalidConfigurationException(getName()+ " was unable to inherit from "+inherit+" as it was unable to find the specified tier.  Verify that it is a valid tier.");
 			this.inheritFrom(tier);
 		}
+		//fill in any null values.
+		inheritFrom(BanOnDeath.getDeafultTier());
+		calculateBanLength();
+		//Colored message support.
+		message = ChatColor.translateAlternateColorCodes('&', message);
+		failedRejoinMessage = ChatColor.translateAlternateColorCodes('&', failedRejoinMessage);
 	}
 
 

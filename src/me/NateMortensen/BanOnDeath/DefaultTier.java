@@ -16,19 +16,19 @@ import com.bukkitarena.configuration.Load;
 public class DefaultTier extends EasyConfigurationSection implements Tier {
 
 	@Load
-	int resettime = 7;
+	public int resettime = 7;
 	@Load
-	int banDelay = 0;
+	public int banDelay = 1;
 	@Load
-	int numberofunit = 30;
+	public int numberofunit = 30;
 	@Load
-	int lives = 0;
+	public int lives = 0;
 	@Load
-	String unit = "minute";
+	public String unit = "minute";
 	@Load
-	String message = "You have failed";
+	public String message = "You have failed";
 	@Load
-	String failedRejoinMessage = "Rejoin in : %M minutes";
+	public String failedRejoinMessage = "Rejoin in : %M minutes";
 	//These are calculated values, they shouldn't be loaded.
 	long banlength, reset;	
 
@@ -38,6 +38,7 @@ public class DefaultTier extends EasyConfigurationSection implements Tier {
 	 */
 	public DefaultTier(ConfigurationSection c) {
 		super(c);
+		load();
 		calculateBanLength();
 
 	}

@@ -3,6 +3,7 @@
  */
 package me.NateMortensen.BanOnDeath.commands;
 
+import me.NateMortensen.BanOnDeath.BODPlayer;
 import me.NateMortensen.BanOnDeath.BanOnDeath;
 
 import org.bukkit.ChatColor;
@@ -45,6 +46,8 @@ public class ReloadCommand implements BODCommand{
 	public void execute(BanOnDeath plugin, CommandSender sender, String[] args) {
 		plugin.loadConfig();
 		plugin.loadTiers();
+		for (BODPlayer player : plugin.players)
+			player.save();
 		plugin.players.clear();
 		sender.sendMessage(ChatColor.GREEN+"BanOnDeath has been reloaded.");
 		
