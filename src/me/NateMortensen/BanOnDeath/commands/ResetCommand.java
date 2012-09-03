@@ -2,6 +2,8 @@ package me.NateMortensen.BanOnDeath.commands;
 
 import me.NateMortensen.BanOnDeath.BODPlayer;
 import me.NateMortensen.BanOnDeath.BanOnDeath;
+
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -18,11 +20,12 @@ public class ResetCommand implements BODCommand {
             sender.sendMessage("You must specify a player to reset.");
             return;
         }
-        Player player = plugin.getServer().getPlayer(args[0]);
-        BODPlayer bplayer = plugin.getPlayer(player.getName());
+        BODPlayer bplayer = plugin.getPlayer(args[0]);
         //Reset their lives if they're online, as you can only do that when you can get their permissions.
-        if (player.isOnline()){
-        	bplayer.reset(plugin.getTierOfPlayer(player));
+        Player p = Bukkit.getServer().getPlayer(args[0]);
+        if (p != null && p.isOnline()){
+        	bplayer.reset(plugin.getTierOfPlayer(p));
+        	p.sendMessage("Your lives have been reset!");
         	sender.sendMessage("You reset the lives and ban information of "+bplayer.getName());
         	return;
         }

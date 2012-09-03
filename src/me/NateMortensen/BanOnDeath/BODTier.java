@@ -40,7 +40,6 @@ public class BODTier extends EasyConfigurationSection implements Tier{
 	}
 	protected void calculateBanLength(){
 		try {
-			System.out.println(unit);
 			long unitValue = TimeUnit.valueOf(unit.toUpperCase()).getTime();
 			banlength = unitValue * numberofunit;
 		} catch(IllegalArgumentException e){

@@ -42,6 +42,10 @@ public class InfoCommand implements BODCommand {
         }
         //set unbantime
         unbantime = "";
+        if (player.getNeedsReset()){
+        	sender.sendMessage("Specified player's information will be reset upon their next login.");
+        	return;
+        }
         if (player.isBanned()){
         	unbantime = ", and will be unbanned on "+dateFormatter.format(new Date(player.getUnbanDate()));
         }
