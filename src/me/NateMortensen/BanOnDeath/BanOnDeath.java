@@ -31,36 +31,26 @@ public class BanOnDeath extends JavaPlugin {
     public File file;
     public boolean logToFile;
     public boolean logging;
-    public List<BODTier> tiers;
+    public List<Tier> tiers;
     public List<BODPlayer> players;
     public String kickmessage;
     public BODCommandDispatcher dispatcher;
     public FileConfiguration playersconfig;
     public FileConfiguration tiersconfig;
-    public BODTier defaulttier;
+    public static Tier defaulttier;
+    public static BanOnDeath main;
     Logger log;
 
     @Override
     public void onEnable() {
+    	main = this;
         config = getConfig();
         log = getLogger();
         //Initialize classes.
-        listener = new BodListener(this);
+        listener = new BodListener();
         dispatcher = new BODCommandDispatcher(this);
-        //Config check for setting the values of defaults.
-        YAPI.configCheck(config, "logging", true);
-        YAPI.configCheck(config, "writeToFile", true);
-        YAPI.configCheck(config, "kick_message", "You have failed!");
-        //Set the values of any variables.
-        logging = config.getBoolean("logging", true);
-        logToFile = config.getBoolean("writeToFile", true);
-        kickmessage = config.getString("kick_message", "You have failed!");
         saveConfig();
-        //TODO initialize commandexecutor
-        //Register listener
-        getServer().getPluginManager().registerEvents(listener, this);
         //Register CommandExecutor
-        //TODO register CommandExecutor
         //send the "enabled" message.
         PluginDescriptionFile pdf = this.getDescription();
         String name = pdf.getName();
@@ -84,30 +74,36 @@ public class BanOnDeath extends JavaPlugin {
                 }
             }
         }
-  
-        createDefaultTier();
-        defaulttier = new BODTier(tiersconfig, "default", this);
-        tiers = loadTiers();
+        defaulttier = new DefaultTier(tiersconfig.getConfigurationSection("default"));
+        loadTiers();
         log("Loaded "+Integer.toString(tiers.size())+" tiers.");
+        YAPI.saveYaml(this, tiersconfig, "tiers.yml");
         
     }
-    public void createDefaultTier(){
-    	if (!tiersconfig.contains("default")){
-    		ConfigurationSection section = tiersconfig.createSection("default");
-    		section.set("lives", 1);
-    		section.set("unit", "minute");
-    		section.set("numberofunit", 30);
-    		section.set("resettime", 7);
-    		YAPI.saveYaml(this, tiersconfig, "tiers.yml");
-    	}
+    public static BanOnDeath getInstance(){
+    	return main;
     }
-    public List<BODTier> loadTiers(){
-    	List<BODTier> loaded = new ArrayList<BODTier>();
+    public static Tier getDeafultTier(){
+    	return defaulttier;
+    }
+    public void loadConfig(){
+    	reloadConfig();
+        //Config check for setting the values of defaults.
+        YAPI.configCheck(config, "logging", true);
+        YAPI.configCheck(config, "writeToFile", true);
+        //Set the values of any variables.
+        logging = config.getBoolean("logging", true);
+        logToFile = config.getBoolean("writeToFile", true);
+    }
+    public void loadTiers(){
+    	tiers = null;
+    	tiersconfig = null;
+    	tiersconfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "tiers.yml"));
     	Set<String> keys = tiersconfig.getKeys(false);
-    	for (String string : keys){ 
-    		loaded.add(new BODTier(tiersconfig, string, this));
-    	}
-    	return loaded;
+    	for (String string : keys)
+    		tiers.add(new BODTier(tiersconfig.getConfigurationSection(string)));
+    	for (Tier tier : tiers)
+    		((BODTier)tier).inherit();
     }
     public BODPlayer getPlayer(String name){
     	name = name.toLowerCase();
@@ -124,40 +120,31 @@ public class BanOnDeath extends JavaPlugin {
     	name = name.toLowerCase();
     	players.add(loadPlayer(name));
     }
-    public void loadTierToList(String name){
-    	name = name.toLowerCase();
-    	tiers.add(loadTier(name));
-    }
-    public BODTier loadTier(String name){
-    	name = name.toLowerCase();
-    	return new BODTier(tiersconfig, name, this);
-    }
     public BODPlayer loadPlayer(String name){
     	name = name.toLowerCase();
     	return new BODPlayer(playersconfig, name, this);
     }
-    public BODTier getTierOfPlayer(Player player){
-    	for (BODTier tier : tiers){
+    public Tier getTierOfPlayer(Player player){
+    	for (Tier tier : tiers){
     		if (player.hasPermission("bod.tiers."+tier.getName().toLowerCase()))return tier;
     	}
     	return defaulttier;
     }
-    public BODTier getTier(String name){
+    public Tier getTier(String name){
     	name = name.toLowerCase();
-    	for (BODTier tier : tiers){
+    	for (Tier tier : tiers){
     		if (tier.getName().equals(name)) return tier;
     	}
     	return defaulttier;
     }
-    public void log(String message)
-    {
+    public void log(String message){
     	if (logging) log.info(message);
     }
 
     @Override
     public void onDisable() {
-        for (BODPlayer player : players)
-        	player.save();
+        YAPI.saveYaml(this, playersconfig, "players.yml");
+        main = null;
     }
 
     @Override

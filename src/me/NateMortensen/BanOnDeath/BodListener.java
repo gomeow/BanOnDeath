@@ -25,10 +25,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class BodListener implements Listener {
 
     private static final DateFormat dateFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-    private final BanOnDeath plugin;
+    private final BanOnDeath plugin = BanOnDeath.getInstance();
 
-    public BodListener(final BanOnDeath plugin) {
-        this.plugin = plugin;
+    public BodListener() {
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler
@@ -40,8 +40,8 @@ public class BodListener implements Listener {
             }
             final BODPlayer player = plugin.getPlayer(theplayer.getName().toLowerCase());
             //Check if the player needs a life reset, and if so, reset their lives.
-            BODTier tier = plugin.getTierOfPlayer(theplayer);
-            if (player.needsReset(tier.getResetTime())){
+            Tier tier = plugin.getTierOfPlayer(theplayer);
+            if (player.needsReset(tier.getReset())){
             	player.reset(tier);
             	theplayer.sendMessage("You've been saved!  Your lives have been reset!");
             }
@@ -51,12 +51,13 @@ public class BodListener implements Listener {
             	plugin.getServer().dispatchCommand((CommandSender)theplayer, "lives");
             	return;
             }
-            theplayer.getInventory().clear();
-            theplayer.getInventory().setArmorContents(null);
             final long now = System.currentTimeMillis();
             // Player ban code goes below.
-            player.ban(tier);
-            theplayer.kickPlayer(plugin.kickmessage);
+            BanRunnable runnable = new BanRunnable(player, tier);
+            if (tier.getBanDelay() <= 0)
+            	plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, runnable);
+            else
+            	plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, runnable, tier.getBanDelay());
             if (plugin.logToFile) {
                 final Date nowDate = new Date(now);
                 final Date unbanDate = new Date(player.getUnbanDate());
@@ -99,17 +100,15 @@ public class BodListener implements Listener {
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
     	BODPlayer player = plugin.getPlayer(event.getPlayer().getName());
+        Tier tier = plugin.getTier(player.getName().toLowerCase());
+        if (player.needsReset(tier.getBanLength()))
+        	player.reset(tier);
         if (player.isBanned()) {
-            Date date = new Date(player.getUnbanDate());
-            final String kickMsg = "Rejoin on: " + dateFormatter.format(date);
+            final String kickMsg = tier.getBanMessage();
             event.disallow(Result.KICK_OTHER, kickMsg);
             return;
         }
-        BODTier tier = plugin.getTier(player.getName().toLowerCase());
-        if (player.needsReset(tier.getBanLength())){
-        	player.reset(tier);
-        }
-        plugin.loadPlayerToList(event.getPlayer().getName());
+        plugin.players.add(player);
     }
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event){

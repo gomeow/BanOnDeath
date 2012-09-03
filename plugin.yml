@@ -1,7 +1,7 @@
 name: BanOnDeath
 main: me.NateMortensen.BanOnDeath.BanOnDeath
 author: Nate Mortensen(evilmidget38)
-version: 2.3.2
+version: 2.4
 commands:
    bod:
       description:  Series of commands related to BanOnDeath.
@@ -26,6 +26,8 @@ permissions:
             bod.give: true
             bod.take: true
             bod.set: true
+    bod.reload:
+        description: Reloads all tiers and players from the config.
     bod.unban:
         description: Allows you to unban a user banned by BoD.
         default: op

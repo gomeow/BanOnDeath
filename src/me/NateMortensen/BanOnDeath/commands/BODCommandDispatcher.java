@@ -15,7 +15,7 @@ public final class BODCommandDispatcher {
 
     private static final BODCommand[] commandArr = {new BanCommand(), new GiveCommand(),
          new InfoCommand(), new ResetCommand(),
-        new SetCommand(), new TakeCommand(), new UnbanCommand(),};
+        new SetCommand(), new TakeCommand(), new UnbanCommand(), new ReloadCommand()};
     private final Map<String, BODCommand> commands = new LinkedHashMap<String, BODCommand>();
     private final BanOnDeath plugin;
 

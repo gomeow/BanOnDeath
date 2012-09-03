@@ -21,28 +21,28 @@ public class BODPlayer {
 	BanOnDeath plugin;
 	ConfigurationSection section;
 	FileConfiguration file;
-	
-	
+
+
 	public BODPlayer(FileConfiguration config, String n, BanOnDeath p){
-		
+
 		file = config;
 		name = n.toLowerCase();
 		plugin = p;
-		
+
 		if (config.contains(name)){
 			section = config.getConfigurationSection(name);
 		}
 		else{
 			section = config.createSection(name);
 		}
-		
+
 		//Load everything from the config, or get the default values.
 		banlength = section.getLong("banlength", 1800000);
 		bantime = section.getLong("bantime", 0);
 		lastreset = section.getLong("lastreset", 0);
 		needsreset = section.getBoolean("needsreset", true);
 		lives = section.getInt("lives", 1);
-		
+
 
 	}
 	//Accessors.  
@@ -67,7 +67,7 @@ public class BODPlayer {
 	public long getUnbanDate(){
 		return bantime + banlength;
 	}
-	
+
 	//Mutators.  No setName method as that shouldn't be changeable.
 	public void setBanLength(long newval){
 		banlength = newval;
@@ -89,20 +89,23 @@ public class BODPlayer {
 		lastreset = newval;
 		save();
 	}
-	
+	public long getRemainingTime(){
+		return banlength - System.currentTimeMillis() - bantime;
+	}
+
 	//other methods.
 	public Boolean isBanned(){
 		if (banlength <= 0) return true;
 		if (System.currentTimeMillis() - bantime < banlength) return true;
 		return false;
 	}
-	public void reset(BODTier tier){
+	public void reset(Tier tier){
 		needsreset = false;
 		lives = tier.getLives();
 		lastreset = System.currentTimeMillis();
 		bantime = 0;
 		save();
-		
+
 	}
 	public Boolean needsReset(long resettime){
 		if (needsreset) return true;
@@ -125,9 +128,20 @@ public class BODPlayer {
 	public void increaseLives(int amount){
 		lives += amount;
 	}
-	public void ban(BODTier tier){
+	public void ban(Tier tier){
 		bantime = System.currentTimeMillis();
 		banlength = tier.getBanLength();
+	}
+	public String getFailedRejoinMessage(Tier tier){
+		String msg = tier.getFailedReconnectMessage();
+		for (TimeUnit unit : TimeUnit.values()){
+			String val = "%"+ unit.name().substring(0, 1);
+			String replacement = Long.toString(getRemainingTime()/unit.getTime());
+			while (msg.contains(val))
+				msg.replace(val, replacement);
+		}
+		if ()
+		return msg;
 	}
 
 }
