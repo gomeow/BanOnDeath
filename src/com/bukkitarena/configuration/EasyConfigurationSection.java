@@ -28,15 +28,13 @@ public class EasyConfigurationSection{
 		return name;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void load() throws InvalidConfigurationException{
 		name = config.getName();
-		System.out.println("Starting to work on "+ getClass().getSimpleName());
 		for (Field field : getValidFields()) {
 			String path = field.getName();
-			System.out.println("Working on field: "+field.getName());
 			try {
 				if (config.contains(path)) {
-					System.out.println("The config contained "+field.getName());
 					if (field.getType().isInstance(EasyConfigurationSection.class)){
 						field.set(this, newInstance((Class<? extends EasyConfigurationSection>) field.getType(), config));
 					}
@@ -49,10 +47,8 @@ public class EasyConfigurationSection{
 						}
 					}
 					field.set(this, config.get(path));
-					System.out.println("The config has set "+field.getName()+" to "+config.get(path).toString());
 				} else {
 					if (field.get(this) != null){
-						System.out.println("Setting "+path+" to "+ field.get(this) +" in class "+ this.getClass().getSimpleName());
 						config.set(path, field.get(this));
 						continue;
 					}
@@ -60,7 +56,6 @@ public class EasyConfigurationSection{
 						throw new InvalidConfigurationException(config.getCurrentPath()+"."+path +" in "+ config.getName() + " may not be null!");
 				}
 			} catch (IllegalAccessException ex) {
-				System.out.println("IAE - "+field.getName());
 			}
 
 		}
@@ -121,7 +116,6 @@ public class EasyConfigurationSection{
 		for (Field field : this.getClass().getDeclaredFields())
 			if (field.isAnnotationPresent(Load.class)){
 				fields.add(field);
-				System.out.println("Recognized the field: "+field.getName()+" as a valid field in "+this.getClass().getSimpleName());
 			}
 		return fields;
 

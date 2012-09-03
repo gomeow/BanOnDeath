@@ -4,6 +4,7 @@
 package me.NateMortensen.BanOnDeath;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.bukkit.configuration.ConfigurationSection;
@@ -24,6 +25,7 @@ public class BODPlayer {
 	BanOnDeath plugin;
 	ConfigurationSection section;
 	FileConfiguration file;
+	private static final DateFormat dateFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 
 
 	public BODPlayer(FileConfiguration config, String n, BanOnDeath p){
@@ -93,7 +95,7 @@ public class BODPlayer {
 		save();
 	}
 	public long getRemainingTime(){
-		return banlength - System.currentTimeMillis() - bantime;
+		return banlength + bantime - System.currentTimeMillis();
 	}
 
 	//other methods.
@@ -134,12 +136,14 @@ public class BODPlayer {
 	public void ban(Tier tier){
 		bantime = System.currentTimeMillis();
 		banlength = tier.getBanLength();
+		save();
 	}
 	public String getFailedRejoinMessage(Tier tier){
 		String msg = tier.getFailedReconnectMessage();
-		for (TimeUnit unit : TimeUnit.values())
-			msg.replace("%"+ unit.name().substring(0, 1), Long.toString(getRemainingTime()/unit.getTime()));
-		msg.replace("%date", DateFormat.getDateInstance().format(new Date(getRemainingTime())));
+		for (TimeUnit unit : TimeUnit.values()){
+			msg = msg.replaceAll("%"+ unit.name().substring(0, 1).toUpperCase(), Long.toString(getRemainingTime()/unit.getTime()));
+		}
+		msg = msg.replace("%date", dateFormatter.format(new Date(getUnbanDate())));
 		return msg;
 	}
 

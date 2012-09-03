@@ -101,10 +101,11 @@ public class BodListener implements Listener {
     public void onPlayerLogin(PlayerLoginEvent event) {
     	BODPlayer player = plugin.getPlayer(event.getPlayer().getName());
         Tier tier = plugin.getTier(player.getName().toLowerCase());
-        if (player.needsReset(tier.getBanLength()))
+        if (player.needsReset(tier.getBanLength())){
         	player.reset(tier);
+        }
         if (player.isBanned()) {
-            final String kickMsg = tier.getBanMessage();
+            final String kickMsg = player.getFailedRejoinMessage(tier);
             event.disallow(Result.KICK_OTHER, kickMsg);
             return;
         }
