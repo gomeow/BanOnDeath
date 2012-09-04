@@ -95,10 +95,10 @@ public class DefaultTier extends EasyConfigurationSection implements Tier {
 	public String getFailedReconnectMessage() {
 		return failedRejoinMessage;
 	}
-	public String getDeathAnnouncement(){
+	public String getBanAnnouncement(){
 		return deathAnnouncement;
 	}
-	public boolean getAnnounceDeath(){
+	public boolean getAnnounceBan(){
 		return announceDeath;
 	}
 	public boolean getResetExtraLives(){

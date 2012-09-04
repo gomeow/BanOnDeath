@@ -149,7 +149,7 @@ public class BODPlayer {
 		return msg;
 	}
 	public String getDeathAnnouncement(Tier tier){
-		String msg = tier.getDeathAnnouncement();
+		String msg = tier.getBanAnnouncement();
 		for (TimeUnit unit : TimeUnit.values())
 			msg = msg.replaceAll("%"+ unit.name().substring(0, 1).toUpperCase(), Long.toString(getRemainingTime()/unit.getTime()));
 		msg = msg.replace("%p", name);
