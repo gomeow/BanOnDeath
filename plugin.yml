@@ -17,6 +17,7 @@ permissions:
         description: Gives access to all BanOnDeath commands.
         default: op
         children:
+            bod.reload: true
             bod.reset: true
             bod.ban: true
             bod.unbanall: true
