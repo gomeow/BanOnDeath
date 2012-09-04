@@ -39,6 +39,7 @@ public class GiveCommand implements BODCommand {
             sender.sendMessage("Currently, that player has " + oldLives + (oldLives == 1 ? " life" : " lives") + " remaining.");
         } else {
             player.setLives(newLives);
+            player.setNeedsReset(false);
             sender.sendMessage(origPlayerName + " has been moved up from " + oldLives + " to " + newLives + (newLives == 1 ? " life" : " lives") + ".");
         }
     }
@@ -48,7 +49,7 @@ public class GiveCommand implements BODCommand {
     }
 
     public String[] getNames() {
-        return new String[]{"give", "givelives", "addlives"};
+        return new String[]{"give", "givelives", "addlives", "add"};
     }
 
     public String getSyntax() {

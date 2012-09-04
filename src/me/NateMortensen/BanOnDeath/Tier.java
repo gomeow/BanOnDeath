@@ -14,6 +14,9 @@ public interface Tier {
 	public String getBanMessage();
 	public String getFailedReconnectMessage();
 	public String getName();
+	public boolean getAnnounceDeath();
+	public String getDeathAnnouncement();
+	public boolean getResetExtraLives();
 	public int getLives();
 	public int getBanDelay();
 

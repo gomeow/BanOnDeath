@@ -1,5 +1,6 @@
 package me.NateMortensen.BanOnDeath.commands;
 
+import me.NateMortensen.BanOnDeath.BODPlayer;
 import me.NateMortensen.BanOnDeath.BanOnDeath;
 import org.bukkit.command.CommandSender;
 
@@ -31,7 +32,9 @@ public class SetCommand implements BODCommand {
             sender.sendMessage("That would leave the player without any lives.");
             sender.sendMessage("If you want to ban them, use " + BODCommandDispatcher.getFullSyntax(plugin.getSubCommand("ban")) + " instead.");
         } else {
-            plugin.getPlayer(args[0]).setLives(amount);
+        	BODPlayer p = plugin.getPlayer(args[0]);
+            p.setLives(amount);
+            p.setNeedsReset(false);
             sender.sendMessage(args[0] + " now has " + amount + " lives.");
         }
     }

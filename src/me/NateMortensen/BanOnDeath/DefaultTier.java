@@ -29,6 +29,12 @@ public class DefaultTier extends EasyConfigurationSection implements Tier {
 	public String message = "You have failed";
 	@Load
 	public String failedRejoinMessage = "Rejoin in : %M minutes";
+	@Load
+	public String deathAnnouncement = "%P has been banned for %M minutes.";
+	@Load
+	public boolean announceDeath = true;
+	@Load
+	public boolean resetExtraLives = false;
 	//These are calculated values, they shouldn't be loaded.
 	long banlength, reset;	
 
@@ -88,6 +94,15 @@ public class DefaultTier extends EasyConfigurationSection implements Tier {
 	}
 	public String getFailedReconnectMessage() {
 		return failedRejoinMessage;
+	}
+	public String getDeathAnnouncement(){
+		return deathAnnouncement;
+	}
+	public boolean getAnnounceDeath(){
+		return announceDeath;
+	}
+	public boolean getResetExtraLives(){
+		return resetExtraLives;
 	}
 
 

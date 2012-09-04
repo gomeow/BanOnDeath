@@ -112,7 +112,10 @@ public class BODPlayer {
 		save();
 
 	}
-	public Boolean needsReset(long resettime){
+	public Boolean needsReset(Tier tier){
+		long resettime = tier.getReset();
+		if (lives > tier.getLives() && !tier.getResetExtraLives())
+			return false;
 		if (needsreset) return true;
 		if (resettime <= 0) return false;
 		if (System.currentTimeMillis() - lastreset > resettime) return true;
@@ -140,10 +143,16 @@ public class BODPlayer {
 	}
 	public String getFailedRejoinMessage(Tier tier){
 		String msg = tier.getFailedReconnectMessage();
-		for (TimeUnit unit : TimeUnit.values()){
+		for (TimeUnit unit : TimeUnit.values())
 			msg = msg.replaceAll("%"+ unit.name().substring(0, 1).toUpperCase(), Long.toString(getRemainingTime()/unit.getTime()));
-		}
 		msg = msg.replace("%date", dateFormatter.format(new Date(getUnbanDate())));
+		return msg;
+	}
+	public String getDeathAnnouncement(Tier tier){
+		String msg = tier.getDeathAnnouncement();
+		for (TimeUnit unit : TimeUnit.values())
+			msg = msg.replaceAll("%"+ unit.name().substring(0, 1).toUpperCase(), Long.toString(getRemainingTime()/unit.getTime()));
+		msg = msg.replace("%p", name);
 		return msg;
 	}
 

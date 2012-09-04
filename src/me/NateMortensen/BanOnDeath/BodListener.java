@@ -7,6 +7,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -41,7 +42,7 @@ public class BodListener implements Listener {
             final BODPlayer player = plugin.getPlayer(theplayer.getName().toLowerCase());
             //Check if the player needs a life reset, and if so, reset their lives.
             Tier tier = plugin.getTierOfPlayer(theplayer);
-            if (player.needsReset(tier.getReset())){
+            if (player.needsReset(tier)){
             	player.reset(tier);
             	theplayer.sendMessage("You've been saved!  Your lives have been reset!");
             }
@@ -58,6 +59,8 @@ public class BodListener implements Listener {
             	plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, runnable);
             else
             	plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, runnable, tier.getBanDelay());
+            if (tier.getAnnounceDeath())
+            	Bukkit.getServer().broadcastMessage(player.getDeathAnnouncement(tier));
             if (plugin.logToFile) {
                 final Date nowDate = new Date(now);
                 final Date unbanDate = new Date(player.getUnbanDate());
@@ -101,7 +104,7 @@ public class BodListener implements Listener {
     public void onPlayerLogin(PlayerJoinEvent event) {
     	BODPlayer player = plugin.getPlayer(event.getPlayer().getName());
         Tier tier = plugin.getTier(player.getName().toLowerCase());
-        if (player.needsReset(tier.getBanLength()))
+        if (player.needsReset(tier))
         	player.reset(tier);
         if (player.isBanned()) {
             final String kickMsg = player.getFailedRejoinMessage(tier);

@@ -31,6 +31,12 @@ public class BODTier extends EasyConfigurationSection implements Tier{
 	public String inherit;
 	@Load
 	public String failedRejoinMessage;
+	@Load
+	public String deathAnnouncement;
+	@Load
+	public boolean announceDeath;
+	@Load
+	public boolean resetExtraLives;
 	//These are calculated values, they shouldn't be loaded.
 	long banlength, reset;	
 
@@ -140,6 +146,15 @@ public class BODTier extends EasyConfigurationSection implements Tier{
 	@Override
 	public String getFailedReconnectMessage() {
 		return failedRejoinMessage;
+	}
+	public String getDeathAnnouncement(){
+		return deathAnnouncement;
+	}
+	public boolean getAnnounceDeath(){
+		return announceDeath;
+	}
+	public boolean getResetExtraLives(){
+		return resetExtraLives;
 	}
 
 
