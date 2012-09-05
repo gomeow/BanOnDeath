@@ -54,12 +54,11 @@ public class BodListener implements Listener {
 			final long now = System.currentTimeMillis();
 			// Player ban code goes below.
 			BanRunnable runnable = new BanRunnable(player, tier);
+			((PlayerDeathEvent)event).setDeathMessage(null);
 			if (tier.getBanDelay() <= 0)
 				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, runnable);
 			else
 				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, runnable, tier.getBanDelay()*20);
-			if (tier.getAnnounceBan())
-				((PlayerDeathEvent)event).setDeathMessage(player.getDeathAnnouncement(tier));
 			if (plugin.logToFile) {
 				final Date nowDate = new Date(now);
 				final Date unbanDate = new Date(player.getUnbanDate());
@@ -74,30 +73,9 @@ public class BodListener implements Listener {
 					e.printStackTrace();
 				}
 			}
+			player.save();
 		}
 	}
-
-	//    @EventHandler
-	//    public void onEntitySpawn(final PlayerRespawnEvent event) {
-	//        final String playerName = event.getPlayer().getName();
-	//        if (playersPendingList.contains(playerName)) {
-	//            playersPendingList.remove(playerName);
-	//
-	//            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-	//
-	//                public void run() {
-	//                    for (String e : plugin.getConfig().getStringList("Command-To-Run-On-Death")) {
-	//                        if (e.contains("{name}")) {
-	//                            e = e.replaceAll("\\{name\\}", playerName);
-	//                        }
-	//                        System.out.println("Now executing " + e);
-	//                        plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), e);
-	//                    }
-	//                }
-	//            }, 1L);
-	//        }
-	//    }
-
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerLogin(PlayerJoinEvent event) {
@@ -116,6 +94,8 @@ public class BodListener implements Listener {
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event){
 		BODPlayer player = plugin.getPlayer(event.getPlayer().getName());
+		if (player.isBanned())
+			event.setQuitMessage(null);
 		if (plugin.players.contains(player)){
 			player.save();
 			plugin.players.remove(player);

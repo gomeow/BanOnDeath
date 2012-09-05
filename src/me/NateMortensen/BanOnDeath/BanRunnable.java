@@ -24,6 +24,9 @@ public class BanRunnable implements Runnable{
 		if (player.isOnline())
 			player.kickPlayer(tier.getBanMessage());
 		p.ban(tier);
+		if (tier.getAnnounceBan())
+			Bukkit.getServer().broadcastMessage(p.getDeathAnnouncement(tier));
+		p.save();
 	}
 
 }

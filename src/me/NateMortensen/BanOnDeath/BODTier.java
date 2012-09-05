@@ -46,7 +46,7 @@ public class BODTier extends EasyConfigurationSection implements Tier{
 	}
 	protected void calculateBanLength(){
 		try {
-			long unitValue = TimeUnit.valueOf(unit.toUpperCase()).getTime();
+			long unitValue = TimeUnit.getEnum(unit.toUpperCase()).getTime();
 			banlength = unitValue * numberofunit;
 		} catch(IllegalArgumentException e){
 			throw new InvalidConfigurationException("Invalid unit for tier:"+getName()+".  Please report the problem if you believe this is a bug.");

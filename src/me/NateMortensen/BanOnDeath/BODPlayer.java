@@ -114,8 +114,8 @@ public class BODPlayer {
 	}
 	public Boolean needsReset(Tier tier){
 		long resettime = tier.getReset();
-		if (lives > tier.getLives() && !tier.getResetExtraLives())
-			return false;
+		//if (lives > tier.getLives() && !tier.getResetExtraLives())
+			//return false;
 		if (needsreset) return true;
 		if (resettime <= 0) return false;
 		if (System.currentTimeMillis() - lastreset > resettime) return true;
@@ -143,16 +143,15 @@ public class BODPlayer {
 	}
 	public String getFailedRejoinMessage(Tier tier){
 		String msg = tier.getFailedReconnectMessage();
-		for (TimeUnit unit : TimeUnit.values())
-			msg = msg.replaceAll("%"+ unit.name().substring(0, 1).toUpperCase(), Long.toString(getRemainingTime()/unit.getTime()));
+		msg = TimeUnit.translateTimeValues(msg, getRemainingTime());
 		msg = msg.replace("%date", dateFormatter.format(new Date(getUnbanDate())));
 		return msg;
 	}
 	public String getDeathAnnouncement(Tier tier){
 		String msg = tier.getBanAnnouncement();
-		for (TimeUnit unit : TimeUnit.values())
-			msg = msg.replaceAll("%"+ unit.name().substring(0, 1).toUpperCase(), Long.toString(getRemainingTime()/unit.getTime()));
-		msg = msg.replace("%p", name);
+		msg = TimeUnit.translateTimeValues(msg, getRemainingTime());
+		msg = msg.replaceAll("%p", name);
+		msg = msg.replace("%date", dateFormatter.format(new Date(getUnbanDate())));
 		return msg;
 	}
 
