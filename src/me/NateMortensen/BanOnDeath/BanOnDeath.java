@@ -56,7 +56,6 @@ public class BanOnDeath extends JavaPlugin {
 		players = new ArrayList<BODPlayer>();
 		playersconfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "players.yml"));
 		log.info(name +" v" + version + " by " + author.get(0) + " enabled!");
-		//Write To file.
 		loadConfig();
 		loadTiers();
 		if (logToFile) {
@@ -82,6 +81,7 @@ public class BanOnDeath extends JavaPlugin {
 	}
 	public void loadConfig(){
 		reloadConfig();
+		config = getConfig();
 		//Config check for setting the values of defaults.
 		YAPI.configCheck(config, "logging", true);
 		YAPI.configCheck(config, "writeToFile", true);
