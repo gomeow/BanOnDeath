@@ -38,7 +38,7 @@ public class BodListener implements Listener {
 	public void onEntityDeath(PlayerDeathEvent event) {
 		String killerType = new String();
 		Player theplayer = event.getEntity();
-		killerType = (theplayer.getKiller() == null) ? "Natural":capitalizeFirstLetter(theplayer.getKiller().getType().toString());
+		killerType = (theplayer.getKiller() == null)?"Natural":capitalizeFirstLetter(theplayer.getKiller().getType().toString());
 		if (theplayer.hasPermission("bod.noban") || theplayer.isOp()) {
 			return;
 		}
